@@ -1,0 +1,49 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}My Tasks - Task Manager{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2 class="mb-4">My Incomplete Tasks</h2>
+        
+        {% if tasks %}
+            {% for task in tasks %}
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title">{{ task.title }}</h5>
+                                {% if task.description %}
+                                    <p class="card-text text-muted">{{ task.description }}</p>
+                                {% endif %}
+                                <small class="text-muted">Created: {{ task.created_at|date:"M d, Y H:i" }}</small>
+                            </div>
+                            <form method="post" action="{% url 'complete_task' task.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-sm btn-complete">Mark Complete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">
+                <p>No tasks yet! All caught up. 🎉</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5 class="card-title">Quick Stats</h5>
+                <p class="card-text">
+                    <strong>Incomplete Tasks:</strong> {{ tasks|length }}
+                </p>
+                <a href="{% url 'add_task' %}" class="btn btn-primary w-100">+ Add New Task</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
